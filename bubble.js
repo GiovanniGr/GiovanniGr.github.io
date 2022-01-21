@@ -50,6 +50,7 @@ function createBubble(data2){
         .attr('transform', `translate(${widthB / 2}, ${heightB / 2})`);
     
 const tooltipB = d3.select('.tooltipBubble');
+        tooltipB.style("visibility", "visible");
         const circleB = nodeB.append('circle')
         .style('fill', d => colors[d.data.group])
         .on('mouseover', function (e, d) {
