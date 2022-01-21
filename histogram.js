@@ -1,7 +1,7 @@
   // set the dimensions and margins of the graph
   var marginH = {top: 10, right: 30, bottom: 30, left: 40},
       widthH = window.innerWidth/2 - marginH.left - marginH.right,
-      heightH = window.innerHeight/2 - marginH.top - marginH.bottom;
+      heightH = window.innerHeight/1.5 - marginH.top - marginH.bottom;
   
   const tooltipHist = d3.select('.tooltipHist').on('mouseout', function (e, d) {
             
@@ -52,6 +52,24 @@ var bins1, bins2;
         d3.select("#bubbleGraph").style("display","none");
         d3.select(".tooltipHist").style("display","none");
         d3.select(".tooltipBubble").style("display","none");
+        var titolo;
+        if( d3.select("#PoliticalDiscussionCheck").property("checked") & d3.select("#puppiesCheck").property("checked"))
+          {
+            titolo = "Distribution of "+selection+" for PoliticalDiscussion and puppies"
+          }
+        else if( d3.select("#PoliticalDiscussionCheck").property("checked"))
+          {
+            titolo = "Distribution of "+selection+" for PoliticalDiscussion"
+          }
+        else  if(d3.select("#puppiesCheck").property("checked"))
+          {
+            titolo = "Distribution of "+selection+" for puppies"
+          }
+          else{
+            titolo = "Select at least one subreddit"
+            
+          }
+          d3.select("#titoloHist").text(titolo);
         
         // Update the X axis
         xHist.domain([-1+d3.min(data, function(d) { return +d.value }),2+d3.max(data, function(d) { return +d.value})])
@@ -190,6 +208,7 @@ var bins1, bins2;
     };
 
     function clearSelectionFunction(){
+      d3.select('#titoloBubble').text("Bubble Chart of all the submissions");
       d3.select("#histGraph").style("display","none");
       d3.select("#bubbleGraph").style("display","block");
       d3.select(".tooltipHist").style("display","none");

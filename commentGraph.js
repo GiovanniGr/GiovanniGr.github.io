@@ -3,7 +3,7 @@ const tooltipComm = d3.select('.tooltipComments');
 // Set the dimensions and margins of the diagram
 var marginTree = {top: 20, right: 90, bottom: 30, left: 90}
     widthTree = window.innerWidth - marginTree.left - marginTree.right,
-    heightTree = window.innerHeight - marginTree.top - marginTree.bottom;
+    heightTree = window.innerHeight*0.85 - marginTree.top - marginTree.bottom;
 
 
 // append the svg object to the body of the page
@@ -32,6 +32,7 @@ function createTree(nameComment){
     .attr("transform", "translate("
           + marginTree.left + "," + marginTree.top + ")");
   // Assigns parent, children, height, depth
+  d3.select("#titoloComm").text("Comments Tree of the submission: "+nameComment);
   treeData = d3.map(treeD).get(nameComment);
   rootTree = d3.hierarchy(treeData, function(d) { return d.children; });
 

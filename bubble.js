@@ -17,6 +17,7 @@ function createBubble(data2){
     d3.select("#bubbleGraph").style("display","block");
     d3.select(".tooltipHist").style("display","none");
     d3.select(".tooltipBubble").style("display","none");
+
     dataNow=data2;
     var data1=[];
     if(d3.select("#puppiesCheck").property("checked"))
@@ -27,6 +28,64 @@ function createBubble(data2){
     {
         data1 = _.shuffle(data1.concat(data2.filter( function(d){return d.group === "PoliticalDiscussion"} )))
     }
+    var range = d3.extent(data1, function(d) { return +d.value });
+    var titolo1;
+    if(selection=="nothing")
+    {
+        if(d3.select("#puppiesCheck").property("checked") & d3.select("#PoliticalDiscussionCheck").property("checked"))
+        {
+            titolo1 = "Bubble Chart for all submission for both subreddits"
+        
+        }
+        else if(d3.select("#PoliticalDiscussionCheck").property("checked"))
+        {
+                titolo1 = "Bubble Chart for all submission for PoliticalDiscussion"
+        }
+        else if(d3.select("#puppiesCheck").property("checked"))
+        {
+                titolo1 = "Bubble Chart for all submission for puppies"
+        }
+    }
+    else if(d3.select("#puppiesCheck").property("checked") & d3.select("#PoliticalDiscussionCheck").property("checked"))
+    {
+        if(range[0]==range[1])
+        {
+            titolo1 = "Bubble Chart for "+selection+"="+range[0]+", for both subreddits"
+        }
+        else
+        {
+            titolo1 = "Bubble Chart for "+selection+" in ["+range+"], for both subreddits"
+        }
+    }
+    else if(d3.select("#PoliticalDiscussionCheck").property("checked"))
+    {
+        if(range[0]==range[1])
+        {
+            titolo1 = "Bubble Chart for "+selection+"="+range[0]+", for PoliticalDiscussion"
+        }
+        else
+        {
+            titolo1 = "Bubble Chart for "+selection+" in ["+range+"], for PoliticalDiscussion"
+        }
+    }
+    else if(d3.select("#puppiesCheck").property("checked"))
+    {
+        if(range[0]==range[1])
+        {
+            titolo1 = "Bubble Chart for "+selection+"="+range[0]+", for puppies"
+        }
+        else
+        {
+            titolo1 = "Bubble Chart for "+selection+" in ["+range+"], for puppies"
+        }
+    }
+    else
+    {
+        titolo1 = "Select at least one subreddit"
+    }
+
+    d3.select("#titoloBubble").text(titolo1);
+
     
     
     const bubble = data1 => d3.pack()
@@ -64,8 +123,9 @@ const tooltipB = d3.select('.tooltipBubble');
             style("top",
             window.pageYOffset + matrixB.f + 2 + "px");
             nameCommentRoot = e.data.name;
+            console.log(e);
             //tooltip.select('img').attr('src', d.data.img);
-            tooltipB.select('a').attr('href', e.data.name).text("Discussion: "+e.data.name);
+            tooltipB.select('a').attr('href', "https://www.reddit.com/r/"+e.data.group+"/comments/"+e.data.name+"/").text("Discussion: "+e.data.name);
             tooltipB.select('span').attr('class', e.data.group).text(e.data.group);
             tooltipB.style('display', 'block')
             .transition()

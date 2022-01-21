@@ -40,8 +40,7 @@
     <!-- tooltip Hist-->
     <div class="tooltipHist" >
         <a href="#" onclick="createBubble(dataNow); return false;">
-            <img src="bubbleG.png"
-            width="200px" height="200px">
+            <img src="bubbleG.png" alt="pippo" border="0" height="100%" width="100%">
          </a>
     </div>
 
@@ -90,13 +89,26 @@
     <span style="padding-right: 80px;">
       
     </span>
+    <div class="tooltipComArrow" align="center" borders="5px">
+      <p borders="5px">
+        Hello! </br></br></br>
+        Remember, this is a interactive website! </br>This means that you can play around with almost everything you see. </br></br>
+        Try to click, select, move over the objects and drag them! </br>Try as many possibilities as you can!</br></br>
+        Will you be able to find all the features!?! </br></br></br>Let's try
+
+      </p> 
+    </div>
+    <span class="comArrow" 
+    onmouseover='d3.select(".tooltipComArrow").style("display","block"); console.log("ciao");return false;'
+    onmouseout ='d3.select(".tooltipComArrow").style("display","none"); console.log("ciao2"); return false;'><img src="comments.png" width="60px" height="60px"></span>
+
     <div class="container">
     <div id="histGraph" style="display: none;">
-      <span style="margin: auto;width: 100%;"> <h1 style="margin: 0 auto;width: 100%;">Titolo</h1></span>
+      <span  style="margin: auto;width: 100%;"> <h1 id="titoloHist" style="margin: 0 auto;width: 100%;">Titolo</h1></span>
     </div>
     <div id="bubbleGraph">
       <div style="margin: auto;width: 100%; justify-content: center;">
-        <span style="margin: auto;width: 100%;"> <h1 style="margin: 0 auto;width: 100%;">Titolo</h1></span>
+        <span  style="margin: auto;width: 100%;"> <h1 id="titoloBubble" style="margin: 0 auto;width: 100%;">Bubble Graph of all the submissions</h1></span>
          <svg id="bubble-chart"></svg> 
       </div>
     </div>
@@ -104,7 +116,9 @@
   </div>
 
 <div style="height: 20%;"></div>
-        
+
+
+
         <div class="tooltipComments">
             <div>
                 <span id="id_comment"></span></br>
@@ -125,6 +139,7 @@
         <div id="commGraphDiv" style="display: none;">
 
             <div>
+                <div><h1 id="titoloComm">Titolo</h1></div>
                 <button id="collapseButton" onclick="collapseAll()" disabled> Collapse all nodes </button>
                 <button id="expandButton" onclick="expandAll()"> Expand all nodes </button>
                 <span class="arrow" onclick="scrollToElem(10, 2500, '.contenitorBubble'); return false;">&#8679;</span>
@@ -134,8 +149,9 @@
         </div>
         <div style="height: 20%;"></div>
         <div id="authorGraphDiv" style="display: none;">
+          <div><h1 id="titoloAuthor">Titolo</h1></div>
           <span class="arrow" onclick="scrollToElem(10, 2500, '.contenitorBubble'); return false;">&#8679;</span>
-            <svg id="author_graph" width="960" height="800" ></svg>
+            <svg id="author_graph"></svg>
         </div>
         
         

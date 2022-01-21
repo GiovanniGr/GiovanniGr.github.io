@@ -1,8 +1,11 @@
 const tooltipAut = d3.select('.tooltipAuthors');
 
-var svgG = d3.select("#author_graph"),
-        width = +svgG.attr("width"),
-        height = +svgG.attr("height"),
+var marginGraph = {top: 20, right: 90, bottom: 30, left: 90}
+    widthGraph = window.innerWidth - marginGraph.left - marginGraph.right,
+    heightGraph = window.innerHeight*0.85 - marginGraph.top - marginGraph.bottom;
+
+var svgG = d3.select("#author_graph").attr("width", widthGraph + marginGraph.right + marginGraph.left)
+    .attr("height", heightGraph + marginGraph.top + marginGraph.bottom),
         nodeG,
         linkG;
 
@@ -11,11 +14,12 @@ var svgG = d3.select("#author_graph"),
     var simulation = d3.forceSimulation()
         .force("link", d3.forceLink().id(function (d) {return d.id;}).distance(100).strength(2))
         .force("charge", d3.forceManyBody())
-        .force("center", d3.forceCenter(width / 2, height / 2));
+        .force("center", d3.forceCenter(widthGraph / 2, heightGraph / 2));
 
         var graphG;
     function createGraph(name){
         d3.json("authorGraphs.json", function (error, G) {
+            d3.select("#titoloAuthor").text("Authors Graph of the submission: "+name);
             svgG = d3.select("#author_graph");
             svgG.append('defs').append('marker')
                 .attrs({'id':'arrowhead',

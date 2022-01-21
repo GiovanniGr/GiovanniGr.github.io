@@ -2,7 +2,7 @@ body {
     margin: 20;
     width: 100vw;
     height: 100vh;  
-    background-color: rgba(250,255,255,0.8);
+    background-color: rgba(217, 236, 236, 0.795);
 }
 
 
@@ -10,9 +10,6 @@ circle {
     cursor: pointer;
 }
 
-img {
-    width: 200px;
-}
 
 a {
     color: rgb(17, 17, 17);
@@ -121,10 +118,23 @@ span {
 .tooltipHist {
     position: absolute;
     display: none;
-    background-color: rgba(165, 165, 165, 0.995);
+    background-color: rgba(216, 216, 216, 0.995);
     font-family: sans-serif;
-    max-width: 700px;
-    width: 300px;
+    width: 100px;
+    height: 100px;
+    color: rgb(29, 29, 29);
+    border-radius: 20px;
+    border: 2px solid #525252;
+}
+
+.tooltipComArrow {
+    position: absolute;
+    right:100px;
+    top:20px;
+    display: none;
+    background-color: rgba(216, 216, 216, 0.995);
+    font-family: sans-serif;
+    width: 500px;
     height: 300px;
     color: rgb(29, 29, 29);
     border-radius: 20px;
@@ -176,3 +186,12 @@ span {
      right: 30px;
      margin-top: 10px;
  }
+
+ .comArrow{
+    color:steelblue;
+    font-size: 40px;
+    position: absolute;
+    right: 30px;
+    margin-top: 50px;
+    max-width: 80px;
+}
