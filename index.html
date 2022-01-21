@@ -14,8 +14,27 @@
       <script src="https://d3js.org/d3.v4.js"></script>
       <script src="https://d3js.org/d3-selection-multi.v1.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.11/lodash.js"></script>
-      <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
 
+      <div class="tooltipBubble">
+        <div>
+            <div style="margin-left: 10%; margin-top: 5%; margin-bottom: 5%;"> <a></a></div>
+            <div><span style="border-radius: 4px; margin-left: 10%;"></span></div>
+            
+        
+        <div class="container">
+            <a href="#" onclick="createGraphVisualisation(); return false;">
+                <img src="authorG.png"
+                width="150px" height="150px">
+             </a>
+             <a href="#" onclick="createTreeVisualisation(); return false;">
+                <img src="commG.png"
+                width="150px" height="150px">
+             </a>
+        </div>
+        </div>
+    </div>
+    
         <!-- Create a div where the Bubble section graph will take place -->
 <div class="contenitorBubble">
     <!-- tooltip Hist-->
@@ -100,24 +119,7 @@
             </div>
           </div>
 
-        <div class="tooltipBubble">
-            <div>
-                <div style="margin-left: 10%; margin-top: 5%; margin-bottom: 5%;"> <a></a></div>
-                <div><span style="border-radius: 4px; margin-left: 10%;"></span></div>
-                
-            
-            <div class="container">
-                <a href="#" onclick="createGraphVisualisation(); return false;">
-                    <img src="authorG.png"
-                    width="150px" height="150px">
-                 </a>
-                 <a href="#" onclick="createTreeVisualisation(); return false;">
-                    <img src="commG.png"
-                    width="150px" height="150px">
-                 </a>
-            </div>
-            </div>
-        </div>
+        
         <div id="commGraphDiv" style="display: none;">
 
             <div>
