@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<style>
+  .contenitorBubble {
+     display : flex;
+    flex-direction : row;
+     
+  }
+
+  .container{
+    display: flex;
+}
+
+  .tooltipHist {
+    position: absolute;
+    visibility: hidden;
+    background-color: #111;
+    display: flex;
+    font-family: sans-serif;
+    max-width: 700px;
+    align-items: "center";
+    justify-content: center;
+}
+</style>
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+
+<!-- Create a div where the graph will take place -->
+<div class="contenitorBubble">
+  <div class="tooltipHist">
+    <div class="container">
+      <a href="">
+          <img src="author_graph.png"
+          width="70px" height="70px">
+       </a>
+    </div>
+  </div>
+  <div id="mbuttons" style="padding-right: 30px;">
+    <form>
+      <span> Subreddit:</span></br>
+      <input type="checkbox" id="puppiesCheck" name="puppiesCheck" value="puppiesCheck" checked="true" onclick="console.log('clicked');updateHist()">
+      <label for="puppiesCheck"> puppies</label><br>
+      <input type="checkbox" id="PoliticalDiscussionCheck" name="PoliticalDiscussionCheck" value="PoliticalDiscussionCheck" checked="true" onclick="console.log('clicked22');updateHist()">
+      <label for="PoliticalDiscussionCheck"> PoliticalDiscussion</label><br>
+
+      <br><br>
+      <span> Feature:</span></br>
+      <input type="button" id="clear_selection" value="Clear Selection" onclick = "bubble()" ><br><br>
+      <input type="radio" id="num_comments" name="fav_language" value="num_comments" onclick="selection = 'num_comments';updateHist();">
+      <label for="num_comments">num_comments</label><br>
+      <input type="radio" id="num_direct_comments" name="fav_language" value="num_direct_comments" onclick="selection = 'num_direct_comments';updateHist();">
+      <label for="num_direct_comments">num_direct_comments</label><br>
+      <input type="radio" id="max_depth" name="fav_language" value="max_depth" onclick="selection = 'max_depth';updateHist();">
+      <label for="max_depth">max_depth</label><br>
+      <input type="radio" id="H_index" name="fav_language" value="H_index" onclick="selection = 'H_index';updateHist(this);">
+      <label for="H_index">H_index</label><br>
+      <input type="radio" id="lifeTime" name="fav_language" value="lifeTime" onclick="selection = 'lifeTime';updateHist(this);">
+      <label for="lifeTime">lifeTime</label><br>
+      <input type="radio" id="averageTime" name="fav_language" value="averageTime" onclick="selection = 'averageTime';updateHist(this);">
+      <label for="averageTime">averageTime</label><br>
+      <input type="radio" id="medianTime" name="fav_language" value="medianTime" onclick="selection = 'medianTime';updateHist(this);">
+      <label for="medianTime">medianTime</label><br>
+      <input type="radio" id="lifetime95" name="fav_language" value="lifetime95" onclick="selection = 'lifetime95';updateHist(this);">
+      <label for="lifetime95">lifetime95</label><br>
+      <input type="radio" id="num_users" name="fav_language" value="num_users" onclick="selection = 'num_users';updateHist(this);">
+      <label for="num_users">num_users</label><br>
+      <input type="radio" id="num_edges" name="fav_language" value="num_edges" onclick="selection = 'num_edges';updateHist(this);">
+      <label for="num_edges">num_edges</label><br>
+      <input type="radio" id="size_largest_conn_comp" name="fav_language" value="size_largest_conn_comp" onclick="selection = 'size_largest_conn_comp';updateHist(this);">
+      <label for="size_largest_conn_comp">size_largest_conn_comp</label><br>
+      <input type="radio" id="recip_value" name="fav_language" value="recip_value" onclick="selection = 'recip_value';updateHist(this);">
+      <label for="recip_value">recip_value</label><br>
+      <input type="radio" id="diam" name="fav_language" value="diam" onclick="selection = 'diam';updateHist(this);">
+      <label for="diam">diam</label><br>
+      <input type="radio" id="clust_coeff" name="fav_language" value="clust_coeff" onclick="selection = 'clust_coeff';updateHist(this);">
+      <label for="clust_coeff">clust_coeff</label><br>
+    </form>
+  </div>
+  <span style="padding-right: 80px;">
+    
+  </span>
+  <div id="histGraph" style="display: none;"></div>
+  <div id="bubbleGraph"> ciao</div>
+</div>
+
+
+<script>
+  var selection="num_comments";
+  const colors = {
+    puppies: '#F16529',
+    js: '#1C88C7',
+    PoliticalDiscussion: '#FCC700'
+};
+
+  // set the dimensions and margins of the graph
+  var margin = {top: 10, right: 30, bottom: 30, left: 40},
+      width = 460 - margin.left - margin.right,
+      height = 400 - margin.top - margin.bottom;
+  
+  const tooltipHist = d3.select('.tooltipHist').on('mouseout', function (e, d) {
+            
+            tooltipHist.style('visibility', 'hidden');
+
+        });
+  // append the svg object to the body of the page
+  var svgHist = d3.select("#histGraph")
+    .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
+  
+
+  // X axis: scale and draw:
+  var xHist = d3.scaleLinear()
+    //.domain([-3+d3.min(data, function(d) { return +d.num_comments }),3+d3.max(data, function(d) { return +d.num_comments })])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
+        .range([0, width]);
+  var xAxisHist = svgHist.append("g")
+        .attr("transform", "translate(0," + height + ")");
+          //.call(d3.axisBottom(xHist));
+
+  // Y axis: scale and draw:
+  var yHist = d3.scaleLinear()
+          .range([height, 0]);
+
+  //yHist.domain([0, d3.max(bins1, function(d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
+  var yAxisHist = svgHist.append("g");
+          //.call(d3.axisLeft(yHist));
+
+
+      // Handmade legend
+      svgHist.append("circle").attr("cx",280).attr("cy",30).attr("r", 6).style("fill", '#F16529').style("opacity",0.6).attr("id","circlePup")
+      svgHist.append("circle").attr("cx",280).attr("cy",60).attr("r", 6).style("fill", '#FCC700').style("opacity",0.6).attr("id","circlePol")
+      svgHist.append("text").attr("x", 300).attr("y", 30).text("puppies").style("font-size", "15px").attr("alignment-baseline","middle").attr("id","labelPup")
+      svgHist.append("text").attr("x", 300).attr("y", 60).text("PoliticalDiscussion").style("font-size", "15px").attr("alignment-baseline","middle").attr("id","labelPol")
+    
+      //d3.select("#histGraph").style("display","block");
+      //d3.select("#bubbleGraph").style("display","none");
+    
+
+    function updateHist(){
+      d3.csv("HistCSV/"+selection+".csv", function(data) {
+
+        d3.select("#histGraph").style("display","block");
+        d3.select("#bubbleGraph").style("display","none");
+        
+        // Update the X axis
+        xHist.domain([-1+d3.min(data, function(d) { return +d.value }),2+d3.max(data, function(d) { return +d.value})])
+        xAxisHist
+        .transition().duration(1000)
+        .call(d3.axisBottom(xHist))
+
+         // set the parameters for the histogram
+        var histogram = d3.histogram()
+          .value(function(d) { return +d.value; })   // I need to give the vector of value
+          .domain(xHist.domain())  // then the domain of the graphic
+          .thresholds(xHist.ticks(20)); // then the numbers of bins
+    
+        // And apply twice this function to data to get the bins.
+        var bins1 = histogram(data.filter( function(d){return d.group === "puppies"} ));
+        var bins2 = histogram(data.filter( function(d){return d.group === "PoliticalDiscussion"} ));
+        console.log(bins1);
+
+        // Update the Y axis
+        var yDom = Math.max(d3.max(bins1, function(d) {return d.length }),d3.max(bins2, function(d) {return d.length }))
+        yHist.domain([0, 5+yDom ]);
+        yAxisHist
+        .transition().duration(1000)
+        .call(d3.axisLeft(yHist));
+
+        // append the bars for series 1
+        // Create the u variable
+        var u;
+        
+        if(d3.select("#puppiesCheck").property("checked")){
+          d3.select("#circlePup").style("display","block");
+          d3.select("#labelPup").style("display","block");
+          u = svgHist.selectAll("rect.bins1")
+        .data(bins1)
+        }
+        else{
+          d3.select("#circlePup").style("display","none");
+          d3.select("#labelPup").style("display","none");
+          u = svgHist.selectAll("rect.bins1")
+        .data({})
+        }
+        //svgHist.selectAll("rect")
+        //.data(bins1)
+        u
+        .enter()
+        .append("rect")
+        .merge(u)
+        .attr("x", 1)
+        .attr("class","bins1")
+        .style("fill", '#F16529')
+        .style("opacity", 0.6)
+        .on('mouseover', function (e, d) {
+            var matrixH = this.getScreenCTM().
+            translate(+this.getAttribute("cx"),
+            +this.getAttribute("cy"));
+            
+            tooltipHist.
+            style("left",
+            window.pageXOffset + matrixH.e + 2 + "px").
+            style("top",
+            window.pageYOffset + matrixH.f + 2 + "px");
+            //tooltip.select('img').attr('src', d.data.img);
+            //tooltipB.select('a').attr('href', e.data.name).text(e.data.name);
+            tooltipHist.style('visibility', 'visible');
+
+        })
+        .transition()
+        .duration(1000)
+        .attr("transform", function(d) { return "translate(" + xHist(d.x0) + "," + yHist(d.length) + ")"; })
+        .attr("width", function(d) { return xHist(d.x1) - xHist(d.x0) -1 ; })
+        .attr("height", function(d) { return height - yHist(d.length); })
+        
+
+        
+
+        u.exit()
+        .remove()
+        
+
+        // append the bars for series 1
+        // Create the u variable
+        
+        var v;
+        if(d3.select("#PoliticalDiscussionCheck").property("checked")){
+          d3.select("#circlePol").style("display","block");
+          d3.select("#labelPol").style("display","block");
+        //svgHist.selectAll("rect")
+        //.data(bins1)
+         v= svgHist.selectAll("rect.bins2")
+        .data(bins2)}
+        else{
+          d3.select("#circlePol").style("display","none");
+          d3.select("#labelPol").style("display","none");
+          v = svgHist.selectAll("rect.bins2")
+        .data({})
+      }
+        
+
+        v
+        .enter()
+        .append("rect")
+        .merge(v)
+        .attr("x", 1)
+        .attr("class","bins2")
+        .style("fill", '#FCC700')
+        .style("opacity", 0.6)
+        .on('mouseover', function (e, d) {
+            var matrixH = this.getScreenCTM().
+            translate(+this.getAttribute("cx"),
+            +this.getAttribute("cy"));
+            
+            tooltipHist.
+            style("left",
+            window.pageXOffset + matrixH.e + 2 + "px").
+            style("top",
+            window.pageYOffset + matrixH.f + 2 + "px");
+            //tooltip.select('img').attr('src', d.data.img);
+            //tooltipB.select('a').attr('href', e.data.name).text(e.data.name);
+            tooltipHist.style('visibility', 'visible');
+
+        })
+        .transition()
+        .duration(1000)
+        .attr("transform", function(d) { return "translate(" + xHist(d.x0) + "," + yHist(d.length) + ")"; })
+        .attr("width", function(d) { return xHist(d.x1) - xHist(d.x0) -1 ; })
+        .attr("height", function(d) { return height - yHist(d.length); })
+        
+    
+
+        v.exit()
+        .remove()
+        
+
+      })
+    };
+
+    function bubble(){
+      d3.select("#histGraph").style("display","none");
+      d3.select("#bubbleGraph").style("display","block");
+      d3.select("#"+selection).property("checked",false);
+
+    };
+  </script>
